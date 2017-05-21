@@ -61,9 +61,14 @@ TREBA DODAT DA SMO UPORABILI:
 -UNIGRAME + BIGRAME + TRIGRAME (brez in z random forest)
 
 \subsection{Support Vector Machine (SVM)}
-Modela za učenje SVM (Support Vector Model) nismo implementirali, temveč smo uporabili model SVM iz knjižnice sklearn. Uporabljeni model se nadzorovano uči na podlagi podatkov za klasifickacijsko in regresijsko analizo. V sam model pošljemo podatke o tipih komentarja ter vektor s podatki o pojavitvi značilk v posameznem komentarju, model pa se na podlagi teh podatkov nauči in kasneje klasificira testne podatke. 
+Modela za učenje SVM (Support Vector Model) nismo implementirali, temveč smo uporabili model SVM iz knjižnice \texttt{sklearn}.
+Iz knjižnice \texttt{sklearn} smo uporabili SVM model, ki se uporablja za klasifikacijo, ter ga v knjižnici \texttt{sklearn} najdemo pod imenom \texttt{SVC}.
+Uporabljeni model se nadzorovano uči na podlagi podatkov za klasifickacijsko in regresijsko analizo.
+V sam model pošljemo podatke o tipih komentarja ter vektor s podatki o pojavitvi značilk v posameznem komentarju, model pa se na podlagi teh podatkov nauči in kasneje klasificira testne podatke. 
 
 TReba dodat / spremenit o SVM.
+
+
 
 \subsection{Random Forest (RF)}
 Metoda “Random Forest” (slov. “Naključni gozdovi”) je ansambelska metoda, ki se na področju strojnega učenja in podatkovnega rudarjenja uporablja za klasifikacijo, regresijo ipd. Metoda deluje tako, da konstruira množico odločitvenih dreves pri učenju. Kot izhod dobimo razred, ki se pri klasifikaciji pri vseh odločitvenih drevesih najpogosteje pojavi. V kolikor se izvaja regresija se izbere povprečna vrednost napovedi vseh odločitvenih dreves. TODO
@@ -103,11 +108,6 @@ Besedilo, ki smo ga želeli klasificirati smo razdelili na besedne n-grame, naka
 \end{table}
 
 \subsection{Način izračuna}
-$$ precision = \frac{tp}{tp + fp} $$
-$$ recall = \frac{tp}{tp + fn} $$
-$$ accuracy = \frac{tp + tn}{tp + tn + fp + fn} $$
-$$ f1 = 2 \cdot \frac{precision \cdot recall}{precision + recall} $$
-
 \begin{table}[h!]
 	\centering
 	\caption{Pomeni spremenljivk v formulah}
@@ -120,6 +120,14 @@ $$ f1 = 2 \cdot \frac{precision \cdot recall}{precision + recall} $$
 		$ fn $ & false negative (v resnici 1, klasificrani kot 0) \\ \hline		
 	\end{tabular}
 \end{table}
+
+$$ precision = \frac{tp}{tp + fp} $$
+$$ recall = \frac{tp}{tp + fn} $$
+$$ accuracy = \frac{tp + tn}{tp + tn + fp + fn} $$
+$$ f1 = 2 \cdot \frac{precision \cdot recall}{precision + recall} $$
+
+\subsection{Primerjava rezultatov}
+TODO
 
 \section{Zaključek}
 TODO
