@@ -31,11 +31,7 @@
 \maketitle
 
 \begin{abstract}
-Razmah interneta in kasneje socialnih omrežij je v naše življenje prinesel mnogo tako pozitivnih, kot tudi negativnih posledic.
-Ena izmed negativnih posledic je tudi razmah negativnega, sovražnega in žaljivega govora
-Pri predmetu Jezikovne tehnologije se bomo znotraj projektne skupine osredotočili na detekcijo in zaznavo prav takšnih besedil oziroma delov besedil znotraj daljših sestavkov.
-Kot že omenjeno se takšna vrsta besedil v veliki meri pojavlja na raznih socialnih omrežjih, forumih in ostalih mestih, kjer lahko uporabniki med seboj komunicirajo in zaradi tega bomo testna besedila jemali iz virov kot so Facebook, 24ur.com, slo-tech.com forumi.
-Cilj našega projekta je spisati algoritem in program, ki bo sovražni in nezaželjen govor prepoznal ter besedilo prijavil administratorju, ki bi seveda lahko besedilo očistil žaljivih besed oziroma le-to v celoti odstranil.
+Po razmahu socialnih omrežij in različnih forumov je prišlo tudi do velikega razmaha nezaželjenega, žaljivega in sovražnega govora na internetu. Ob ogromnem številu komentarjev in objav, ki se na spletu pojavljajo, je praktično nemogoče, da bi administratorji vse žaljive objave zaznali in ročno izbrisali in zaradi tega je zelo zaželjeno avtomatsko zaznavanje takšnih objav. Avtomatizacija zaznave sovražnega govora je eden izmed izzivov sodobnega programiranja, sami pa smo se ga znotraj projektne skupine lotili z obdelavo n-gramov s pomočje metode bag of words (BoW), kjer smo s pridobljenimi podatki naučili dva različna klasifikatorja - Support Vector Machine (SVM) in Random Forrest (RF). Iz dobljenih rezultatov lahko sklepamo, da je za naše podatke bolj primeren klasifikator SVM, ki je dosegel približno 70\% uspešnost klasifikacije besedila.
 \end{abstract}
 
 \keywords{sovražni govor, žaljivi govor, žaljivke, zaznava žaljivk, detekcija žaljivk, preučevanje besedila}
@@ -49,8 +45,8 @@ Med sovražni govor spada ves govor, ki zmerja, žali, ustrahuje, spodbuja k nas
 S podanim izzivom smo se s kolegi iz projektne skupine tudi (bolj ali manj) uspešno spopadli.
 
 \section{Sorodna dela}
-Analiza sentimenta ({\it ang. sentiment analsys}) oziroma analiza mnenj v besedilih ({\it ang. opinion minig}).
-Ta tehnika se uporablja pri rudarjenju naravnega jezika.
+Naša raziskovalna naloga temelji na članku \cite{Greevy:2004:CRT:1008992.1009074}, kjer avtor predstavi klasifikator Support Vector Machines (SVM) in pristop Bag-of-Words (BOW). V raziskovalnem delu smo se odločili, da se ne osredotočimo izkjučno na omenjen članek, temveč poleg klasifikatorja SVM testiramo tudi klasifikator Random Forest in posledično ugotovimo kateri izmed testiranih klasifikatorjev je za obravnavano temo bolj primeren. 
+
 V članku \cite{POI3:POI385} je uporabljena analiza sentimenta za boljšo detekcijo žaljivega govora na spletenih straneh.
 V prej omenjenem članku je bilo veliko pozornosti namenjene pripravi učnih korpusov, ki so bili deljeni na več različnih tipov žaljitev.
 Korpuse pred učenjem se prečistijo, tako da odstranijo odvečne besede in znake.
@@ -60,6 +56,7 @@ Prečiščene n-grame testirajo na SVM modelu, naključnem gozdu dreves ({\it Ra
 V prej omenjenem članku je tudi opis metode priprave podatkov za klasifikacijo z uporabo metode kosa z besedami ({\it ang. bag of words}).
 
 \section{Metode}
+\subsection{Korpus}
 Množica komentarjev nad katerimi izvajamo učenje je v angleškem jeziku, saj smo si delo poizkušali olajšati s tem, da smo množico komentarjev pridobili s spleta ter jih klasificirali v razrede, ki smo jih preverjali. 
 Preden smo komentarje poslali v algoritme za klasificiranje smo vseh 115 tisoč komentarjev naključno zamenjali med seboj. 
 Za učno množico smo izbrali prvih 7 tisoč komentarjev, medtem ko smo naslednje 3 tisoč komentarjev uporabili za testno množico. Preostale komentarje smo zavrgli.
@@ -76,8 +73,8 @@ Model vreče besed ({\it ang. Bag of words}) temelji na obdelavi značilk.
 Iz besedila najprej z obdelavo slovarja vseh značilk, ki se pojavijo v vseh komentarjih, ter polja vseh komentarjev s pripadajočimi tipi pridobimo slovar s tipom komentarja in vektorjem pojavitve značilk za vse komentarje.
 Za označitev značilk, ki se pojavijo v samem komentarju smo uporabili binarni model, kar pomeni, da smo za vsako značilko v slovarju, ki se pojavi v komentarju, na njeno mesto zapisali 1 oziroma za vsako značilko v slovarju, ki se v komentarju ne pojavi, smo na njeno mesto zapisali 0.
 
-\subsection{Support Vector Machine (SVM)}
-Modela za učenje {\tt SVM} ({\it ang. Support Vector Model}) nismo implementirali, temveč smo uporabili model {\tt SVM} iz knjižnice {\tt sklearn}.
+\subsection{Support Vector Machine}
+Modela za učenje {\tt SVM}  nismo implementirali, temveč smo uporabili model {\tt SVM} iz knjižnice {\tt sklearn}.
 Iz knjižnice {\tt sklearn} smo uporabili SVM model, ki se uporablja za klasifikacijo, ter ga v knjižnici {\tt sklearn} najdemo pod imenom {\tt SVC}.
 Uporabljeni model se nadzorovano uči na podlagi podatkov za klasifickacijsko in regresijsko analizo.
 Za učenje modelu lahko nastavimo tudi jedro, ki predstavlja algoritem za učenje.
@@ -150,18 +147,26 @@ $$ recall = \frac{tp}{tp + fn} $$
 $$ accuracy = \frac{tp + tn}{tp + tn + fp + fn} $$
 $$ f1 = 2 \cdot \frac{precision \cdot recall}{precision + recall} $$
 \subsection{Rezultati}
-Pri vseh metodah smo za učenje uporabili uni-grame, bi-grame in tri-grame.
+Iz podatkov lahko ugotovimo, da smo višji odstotek natančnosti klasifikacije komentarjev dobili z metodo SVM, ki nam je pravilno klasificirala okoli 70\% testne množice, medtem ko nam je metoda Random Forest pravilno klasificirala približno 60\% komentarjev.
+Iz tabele je razvidno, da smo algoritem klasificiranja izvedli nad 1000 komentarji, kjer bi jih 501 moralo biti klasificiranih kot nežaljiv komentar, medtem ko bi moralo biti preostalih 499 klasificiranih kot žaljiv oziroma sovražen komentar.\\
+Za vsako metodo smo izračunali:
+\begin{itemize}
+	\item natančnost ({\it ang. accuracy}), ki nam pove odstotek pravilno klasificiranih komentarjev;
+	\item preciznost ({\it ang. precision}), ki nam pove kolikšen odstotek komentarjev za klasificiran razred je pravzaprav bilo pravilno klasificiranih;
+	\item priklic ({\it ang. recall}), ki nam pove kolikšen odstotek komentarjev, ki bi morali biti klasificiran v določen razred je pravzaprav bilo pravilno klasificiranih;
+	\item f1-vrednost ({\it ang. f1-score}) nam vrne vrednost, ki je kombinacija preciznosti in priklica, kjer vrednost bližje 1 predstavlja boljše rezultate.
+\end{itemize}
 
 \subsubsection{SVM}
 \begin{table}[h!]
 	\centering
 	\caption{Meritve za model SVM}
-	\begin{tabular}{|c|c|c|c|c|}
+	\begin{tabular}{|c|c|c|c|}
 		\hline
-		\textbf{Razred} & \textbf{Natančnost} & \textbf{Odpoklic} & \textbf{F1} & \textbf{Podpora} \\ \hline
-		Ni žaljivo & 0.67 & 0.79 & 0.73 & 501 \\ \hline
-		Je žaljivo & 0.75 & 0.61 & 0.67 & 499 \\ \hline \hline
-		povprečje & 0.71 & 0.70 & 0.70 & 1000 \\ \hline
+		\textbf{Tip klasifikacije} & \textbf{Specifičnost} & \textbf{Priklic} & \textbf{F1} \\ \hline
+		0 (Ni žaljivo) & 0.67 & 0.79 & 0.73 \\ \hline
+		1 (Je žaljivo) & 0.75 & 0.61 & 0.67 \\ \hline \hline
+		povp./skupno & 0.71 & 0.70 & 0.70 \\ \hline
 	\end{tabular}
 \end{table}
 Natančnost modela 70.3\% (703/1000).
@@ -170,21 +175,22 @@ Natančnost modela 70.3\% (703/1000).
 \begin{table}[h!]
 	\centering
 	\caption{Meritve za model Random forest}
-	\begin{tabular}{|c|c|c|c|c|}
+	\begin{tabular}{|c|c|c|c|}
 		\hline
-		\textbf{Razred} & \textbf{Natančnost} & \textbf{Odpoklic} & \textbf{F1} & \textbf{Podpora} \\ \hline
-		Ni žaljivo & 0.58 & 0.72 & 0.65 & 501 \\ \hline
-		Je žaljivo & 0.63 & 0.48 & 0.55 & 499 \\ \hline \hline
-		povprečje & 0.61 & 0.60 & 0.60 & 1000 \\ \hline
+		\textbf{Tip klasifikacije} & \textbf{Specifičnost} & \textbf{Priklic} & \textbf{F1} \\ \hline
+		0 (Ni žaljivo) & 0.58 & 0.72 & 0.65\\ \hline
+		1 (Je žaljivo) & 0.63 & 0.48 & 0.55\\ \hline \hline
+		povp./skupno & 0.61 & 0.60 & 0.60 \\ \hline
 	\end{tabular}
 \end{table}
 Natančnost modela 60.5\% (605/1000).
 
-\subsection{Interpolacija rezultatov}
-TODO
-
 \section{Zaključek}
-TODO
+Avtomatizacija zaznave nezaželjenega, žaljivega in sovražnega govora ostaja težje rešljiv problem. Skozi raziskovalno nalogo smo dokazali, da se z različnimi algoritmi in metodami sicer sovražni govor v več primerih da zaznati, a popolno oziroma skoraj večinsko zaznavo sovražnega govora je zelo težko doseči. 
+
+Z doseženimi rezultati smo generalno zadovoljni, čeprav smo pred začetkom pričakovali še malce boljše rezultate.
+Korpuse pridobljene na naslovu \cite{bworld}, bi lahko dajali boljše rezultate vendar nismo uporabili dodatnih prednosti analize sentimenta.
+Rezultate bi lahko izboljšali z uporabo ansambla, ki je sestavljen iz linearnih modelov.
 
 \bibliographystyle{abbrv}
 \bibliography{sigproc} 
