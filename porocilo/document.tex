@@ -54,9 +54,9 @@ Ta tehnika se uporablja pri rudarjenju naravnega jezika.
 V članku \cite{POI3:POI385} je uporabljena analiza sentimenta za boljšo detekcijo žaljivega govora na spletenih straneh.
 V prej omenjenem članku je bilo veliko pozornosti namenjene pripravi učnih korpusov, ki so bili deljeni na več različnih tipov žaljitev.
 Korpuse pred učenjem se prečistijo, tako da odstranijo odvečne besede in znake.
-Pri čisčenju podatkov odstranijo tudi odvečne besede, ki ne vplivajo na pomen stavka.
+Pri čiščenju podatkov odstranijo tudi odvečne besede, ki ne vplivajo na pomen stavka.
 Modele predvsem učijo na n-gramih, ki uporablja najmanj eno besedo in največ pet besed.
-Preciscene n-grame testirajo na SVM modelu, naključnem gozdu dreves ({\it Random Forest Decision Tree}), naivnem bayes modelu ({\it ang. Naive Bayes Classifier}) in ansambel klasifikatorjev, ki uporabljajo glasovanje za izbiranje izhodnega razreda.
+Prečiščene n-grame testirajo na SVM modelu, naključnem gozdu dreves ({\it Random Forest Decision Tree}), naivnem bayes modelu ({\it ang. Naive Bayes Classifier}) in ansambel klasifikatorjev, ki uporabljajo glasovanje za izbiranje izhodnega razreda.
 V prej omenjenem članku je tudi opis metode priprave podatkov za klasifikacijo z uporabo metode kosa z besedami ({\it ang. bag of words}).
 
 \section{Metode}
@@ -103,11 +103,12 @@ Več o samih naključnih gozdovih lahko izveste v člankih \cite{ho1998random, h
 \subsection{Detekcija z n-grami}
 N-gram je n dolga sekvenca enot, generirana iz podanega teksta.
 Ponavadi na področju računalniške lingvistike in verjetnosti n-grame ločimo na besedne in znakovne n-grame. 
-Stopnja n-grama ponavadi poteka od 1 do 5. 
+Stopnja n-grama ponavadi poteka od 1 do 5.
 Kjer n-gram stopnje 1 imenujemo unigram, n-gram stopnje 2 bigram, n-gram stopnje 3 trigram in tako dalje. 
-V naši metodi smo uporabljali izključno besedne n-grame. 
+V naši metodi smo uporabljali izključno besedne n-grame.
 Besedilo, ki smo ga želeli klasificirati smo razdelili na besedne n-grame, nakar smo le-te uporabili pri klasifikaciji besedila s pomočjo naučenega modela.
-V našem delu smo uporabili uni-grame, bi-grame in tri-grame.
+Metoda je odporna na nebesedne napake v besedilu.
+V našem delu smo uporabili unigrame, bigrame in trigrame, ker napake najpogosteje popravimo ze na dolžini od 3 do 5 znakov.
 
 \section{Meritve in rezultati}
 \subsection{Vrednotenje meritev}
@@ -179,7 +180,7 @@ Natančnost modela 70.3\% (703/1000).
 \end{table}
 Natančnost modela 60.5\% (605/1000).
 
-\subsection{Primerjava rezultatov}
+\subsection{Interpolacija rezultatov}
 TODO
 
 \section{Zaključek}
