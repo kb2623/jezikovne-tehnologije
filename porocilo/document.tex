@@ -4,6 +4,8 @@
 \usepackage[slovene]{babel}
 \usepackage{hyperref}
 
+\graphicspath{ {slike/} }
+
 \begin{document}
 
 \title{Detekcija žaljivega besedila}
@@ -39,48 +41,116 @@ Cilj našega projekta je spisati algoritem in program, ki bo sovražni in nezaž
 \keywords{sovražni govor, žaljivi govor, žaljivke, zaznava žaljivk, detekcija žaljivk, preučevanje besedila}
 
 \section{Uvod}
-Razmah interneta in kasneje socialnih omrežij je v naše življenje prinesel mnogo tako pozitivnih, kot tudi negativnih posledic. Socialna omrežja nam omogočajo lažje ohranjanje stikov z oddaljenimi prijatelji in znanci in možnost hitre komunikacije z ostalimi uporabniki socialnega omrežja, vendar pa je prav zaradi odprtosti komunikacije prišlo do velikega razmaha negativnega, žaljivega in sovražnega govora. Ljudje imamo različne poglede na svet in nemalokrat se pri izražanju nestrinjanja uporabijo neprimerne, žaljive besede. Žaljivi govor (tudi neprimerni govor) je opredeljen kot govor, pri katerem gre za žaljivo komunikacijo, ki je označena kot žaljivka, žaljiv izraz močnih čustev ali žaljivo govorjenje. Prav tako so socialna omrežja postala raj za širjenje drugačnih pogledov na svet, kjer se nemalokrat med drugimi diskriminira različne manjšine in rase, kar spada pod sovražni govor.  Med sovražni govor spada ves govor, ki zmerja, žali, ustrahuje, spodbuja k nasilju, sovraštvu ali diskriminaciji. Jasno je, da so vse oblike negativno nastrojenega govora na socialnih omrežjih prepovedane, izziv pa je takšen govor avtomatsko razpoznati.S podanim izzivom smo se s kolegi iz projektne skupine tudi (bolj ali manj) uspešno spopadli.
+Razmah interneta in kasneje socialnih omrežij je v naše življenje prinesel mnogo tako pozitivnih, kot tudi negativnih posledic. 
+Socialna omrežja nam omogočajo lažje ohranjanje stikov z oddaljenimi prijatelji in znanci in možnost hitre komunikacije z ostalimi uporabniki socialnega omrežja, vendar pa je prav zaradi odprtosti komunikacije prišlo do velikega razmaha negativnega, žaljivega in sovražnega govora.
+Ljudje imamo različne poglede na svet in nemalokrat se pri izražanju nestrinjanja uporabijo neprimerne, žaljive besede. Žaljivi govor (tudi neprimerni govor) je opredeljen kot govor, pri katerem gre za žaljivo komunikacijo, ki je označena kot žaljivka, žaljiv izraz močnih čustev ali žaljivo govorjenje.
+Prav tako so socialna omrežja postala raj za širjenje drugačnih pogledov na svet, kjer se nemalokrat med drugimi diskriminira različne manjšine in rase, kar spada pod sovražni govor.
+Med sovražni govor spada ves govor, ki zmerja, žali, ustrahuje, spodbuja k nasilju, sovraštvu ali diskriminaciji. Jasno je, da so vse oblike negativno nastrojenega govora na socialnih omrežjih prepovedane, izziv pa je takšen govor avtomatsko razpoznati.
+S podanim izzivom smo se s kolegi iz projektne skupine tudi (bolj ali manj) uspešno spopadli.
 
 \section{Sorodna dela}
-Članki~\cite{Burnap2016, Chen:2012:DOL:2411131.2411739, POI3:POI385}
+Analiza sentimenta ({\it ang. sentiment analsys}) oziroma analiza mnenj v besedilih ({\it ang. opinion minig}).
+Ta tehnika se uporablja pri rudarjenju naravnega jezika.
+V članku \cite{POI3:POI385} je uporabljena analiza sentimenta za boljšo detekcijo žaljivega govora na spletenih straneh.
+V prej omenjenem članku je bilo veliko pozornosti namenjene pripravi učnih korpusov, ki so bili deljeni na več različnih tipov žaljitev.
+Korpuse pred učenjem se prečistijo, tako da odstranijo odvečne besede in znake.
+Pri čisčenju podatkov odstranijo tudi odvečne besede, ki ne vplivajo na pomen stavka.
+Modele predvsem učijo na n-gramih, ki uporablja najmanj eno besedo in največ pet besed.
+Preciscene n-grame testirajo na SVM modelu, naključnem gozdu dreves ({\it Random Forest Decision Tree}), naivnem bayes modelu ({\it ang. Naive Bayes Classifier}) in ansambel klasifikatorjev, ki uporabljajo glasovanje za izbiranje izhodnega razreda.
+V prej omenjenem članku je tudi opis metode priprave podatkov za klasifikacijo z uporabo metode kosa z besedami ({\it ang. bag of words}).
 
 \section{Metode}
-Množica komentarjev nad katerimi izvajamo učenje je v angleškem jeziku, saj smo si delo poizkušali olajšati s tem, da smo množico komentarjev pridobili s spleta ter jih klasificirali v razrede, ki smo jih preverjali. Preden smo komentarje poslali v algoritme za klasificiranje smo vseh 115 tisoč komentarjev naključno zamenjali med seboj. Za učno množico smo izbrali prvih 7 tisoč komentarjev, medtem ko smo naslednje 3 tisoč komentarjev uporabili za testno množico. Preostale komentarje smo zavrgli.
+Množica komentarjev nad katerimi izvajamo učenje je v angleškem jeziku, saj smo si delo poizkušali olajšati s tem, da smo množico komentarjev pridobili s spleta ter jih klasificirali v razrede, ki smo jih preverjali. 
+Preden smo komentarje poslali v algoritme za klasificiranje smo vseh 115 tisoč komentarjev naključno zamenjali med seboj. 
+Za učno množico smo izbrali prvih 7 tisoč komentarjev, medtem ko smo naslednje 3 tisoč komentarjev uporabili za testno množico. Preostale komentarje smo zavrgli.
 
 \subsection{Predprocesiranje komentarja}
 Vsak prebran komentar smo pred samim učenjem oziroma testiranjem ustrezno obdelali. Komentar smo razdelili na dva dela, kjer nam je prvi del predstavljal tip komentarja (z 0 so označeni nežaljivi komentarji, medtem ko so z 1 označeni žaljivi in sovražni komentarji), drugi del pa je predstavljal samo vsebino komentarja. 
 
-Obdelali smo tudi samo vsebino komentarja. V besedilu smo odstranili morebitne povezave, skoke v novo vrstico, tabulatorje, narekovaje, odvečne presledke in dvopičja ter celotno besedilo pretvorili v male črke. Poleg omenjenega preoblikovanja pa smo iz komentarja izločili tudi besede brez pomena (ang. stopwords), kot so any, these, which in drugo. Za na konec smo besedam še odstranili končnice.
+Obdelali smo tudi samo vsebino komentarja. V besedilu smo odstranili morebitne povezave, skoke v novo vrstico, tabulatorje, narekovaje, odvečne presledke in dvopičja ter celotno besedilo pretvorili v male črke. Poleg omenjenega preoblikovanja pa smo iz komentarja izločili tudi besede brez pomena ({\it ang. stopwords}), kot so any, these, which in drugo. Za na konec smo besedam še odstranili končnice.
 
 V primeru učne množic smo tip komentarja shranjevali v polje, ki smo ga kasneje združili z značilkami, ki s v komentarju pojavljajo, ter nad združenim poljem izvedli algoritem. V primeru testnih množic smo tipe komentarja shranjevali zgolj zaradi preverjanja uspešnosti klasifikacije testne množice, s pomočjo katerih smo kasneje lahko izračunali natančnost klasifikacije v odstotkih.
 
 \subsection{Bag-of-Words (BOW)}
-Model vreče besed (ang. Bag of words) temelji na obdelavi značilk. Iz besedila najprej z obdelavo slovarja vseh značilk, ki se pojavijo v vseh komentarjih, ter polja vseh komentarjev s pripadajočimi tipi pridobimo slovar s tipom komentarja in vektorjem pojavitve značilk za vse komentarje. Za označitev značilk, ki se pojavijo v samem komentarju smo uporabili binarni model, kar pomeni, da smo za vsako značilko v slovarju, ki se pojavi v komentarju, na njeno mesto zapisali 1 oziroma za vsako značilko v slovarju, ki se v komentarju ne pojavi, smo na njeno mesto zapisali 0.
-
-TREBA DODAT DA SMO UPORABILI:
--UNIGRAME + BIGRAME + TRIGRAME (brez in z random forest)
+Model vreče besed ({\it ang. Bag of words}) temelji na obdelavi značilk.
+Iz besedila najprej z obdelavo slovarja vseh značilk, ki se pojavijo v vseh komentarjih, ter polja vseh komentarjev s pripadajočimi tipi pridobimo slovar s tipom komentarja in vektorjem pojavitve značilk za vse komentarje.
+Za označitev značilk, ki se pojavijo v samem komentarju smo uporabili binarni model, kar pomeni, da smo za vsako značilko v slovarju, ki se pojavi v komentarju, na njeno mesto zapisali 1 oziroma za vsako značilko v slovarju, ki se v komentarju ne pojavi, smo na njeno mesto zapisali 0.
 
 \subsection{Support Vector Machine (SVM)}
-Modela za učenje SVM (Support Vector Model) nismo implementirali, temveč smo uporabili model SVM iz knjižnice \texttt{sklearn}.
-Iz knjižnice \texttt{sklearn} smo uporabili SVM model, ki se uporablja za klasifikacijo, ter ga v knjižnici \texttt{sklearn} najdemo pod imenom \texttt{SVC}.
+Modela za učenje {\tt SVM} ({\it ang. Support Vector Model}) nismo implementirali, temveč smo uporabili model {\tt SVM} iz knjižnice {\tt sklearn}.
+Iz knjižnice {\tt sklearn} smo uporabili SVM model, ki se uporablja za klasifikacijo, ter ga v knjižnici {\tt sklearn} najdemo pod imenom {\tt SVC}.
 Uporabljeni model se nadzorovano uči na podlagi podatkov za klasifickacijsko in regresijsko analizo.
-V sam model pošljemo podatke o tipih komentarja ter vektor s podatki o pojavitvi značilk v posameznem komentarju, model pa se na podlagi teh podatkov nauči in kasneje klasificira testne podatke. 
-
-TReba dodat / spremenit o SVM.
-
-
+Za učenje modelu lahko nastavimo tudi jedro, ki predstavlja algoritem za učenje.
+V našem delu smo uporabili linearno jedro.
+V sam model pošljemo podatke o tipih komentarja ter vektor s podatki o pojavitvi značilk v posameznem komentarju, model pa se na podlagi teh podatkov nauči in kasneje klasificira testne podatke.
+Vec o modelu lahko najdete v članku \cite{Cortes1995}.
 
 \subsection{Random Forest (RF)}
-Metoda “Random Forest” (slov. “Naključni gozdovi”) je ansambelska metoda, ki se na področju strojnega učenja in podatkovnega rudarjenja uporablja za klasifikacijo, regresijo ipd. Metoda deluje tako, da konstruira množico odločitvenih dreves pri učenju. Kot izhod dobimo razred, ki se pri klasifikaciji pri vseh odločitvenih drevesih najpogosteje pojavi. V kolikor se izvaja regresija se izbere povprečna vrednost napovedi vseh odločitvenih dreves. TODO
+Metoda {\tt Random Forest} ({\it slov. Naključni gozdovi}) je ansambelska metoda, ki se na področju strojnega učenja in podatkovnega rudarjenja uporablja za klasifikacijo, regresijo ipd.
+Metode nismo razvili sami, temveč smo jo uporabili iz knjižnice {\tt sklearn}.
+Knjižnica {\tt sklearn} na ponuja dva tipa naključnih dreves.
+Prvi tip naključnih dreves se uporablja pri regresji, ter jo najdemo v izbrani knjižnici pod imenom {\tt RandomForestRegressor}.
+Drugi tip naključnih dreves se pa uporablja za klasifikacijo, ter jo najdemo v knjižnici {\tt sklearn} po imenom {\tt RandomForestClassifier}.
+V našem delu smo uporabili metodo, ki podpira klasifikacijo.
+Metoda deluje tako, da konstruira množico odločitvenih dreves pri učenju.
+Vsako drevo uporablja različne učne podmnožice podatkov za učenje. Velikost učnih podmnožic so pri vseh naučenih drevesih enake.
+Knjižnica {\tt sklearn} podpira izbiranje vzorcev učne možice na podlagi metode zamenjave, ki je uporabljena pri klasifikacijski metodi bagging.
+Algoritem za učenje uporablja tudi tehniko povprečenja, s katero se skuša izogniti prekomernem prilagajanju učni množici.
+Kot izhod dobimo razred, ki se pri klasifikaciji pri vseh odločitvenih drevesih najpogosteje pojavi.
+V kolikor se izvaja regresija se izbere povprečna vrednost napovedi vseh odločitvenih dreves.
+Več o samih naključnih gozdovih lahko izveste v člankih \cite{ho1998random, ho1995random}.
 
 \subsection{Detekcija z n-grami}
 N-gram je n dolga sekvenca enot, generirana iz podanega teksta.
-Ponavadi na področju računalniške lingvistike in verjetnosti n-grame ločimo na besedne in znakovne n-grame. Stopnja n-grama ponavadi poteka od 1 do 5. Kjer n-gram stopnje 1 imenujemo unigram, n-gram stopnje 2 bigram, n-gram stopnje 3 trigram in tako dalje. 
+Ponavadi na področju računalniške lingvistike in verjetnosti n-grame ločimo na besedne in znakovne n-grame. 
+Stopnja n-grama ponavadi poteka od 1 do 5. 
+Kjer n-gram stopnje 1 imenujemo unigram, n-gram stopnje 2 bigram, n-gram stopnje 3 trigram in tako dalje. 
 V naši metodi smo uporabljali izključno besedne n-grame. 
-Besedilo, ki smo ga želeli klasificirati smo razdelili na besedne n-grame, nakar smo le-te uporabili pri klasifikaciji besedila s pomočjo naučenega modela. TODO
+Besedilo, ki smo ga želeli klasificirati smo razdelili na besedne n-grame, nakar smo le-te uporabili pri klasifikaciji besedila s pomočjo naučenega modela.
+V našem delu smo uporabili uni-grame, bi-grame in tri-grame.
 
-\section{Ugotovitve}
+\section{Meritve in rezultati}
+\subsection{Vrednotenje meritev}
+Na področju strojnega učenja in posebej problem statistične klasifikacije se za vrednotenje rezultatov uporablja kontingenčna matrika({\it ang. confusion matrix}), znana tudi kot matrika napake.
+Kontingenčna matrika je tabelarična predstavitev podatkov, ki omogočajo vizualizacijo algoritmom za napovedovanje.
+
+\begin{figure}[!h]
+	\centering
+	\caption{Primer mnozice rezultatov klasifikatorja} \label{mnozicaZadetkov}
+	\includegraphics[scale=0.45]{Precisionrecall}
+\end{figure}
+
+Slika \ref{mnozicaZadetkov} prikazuje množico posameznikov, ki so označeni z majhnimi polnimi in praznimi krogi.
+Na sliki \ref{mnozicaZadetkov} je prikazan tudi večji krog, ki pa predstavlja vrednosti klasifikacije z izbranim klasifikatorjem.
+Kvaliteto klasifikatorja ocenjujemo na podlagi velikega kroga.
+Več kot je pravilno klasificiranih primerkov v razredu, ter manj kot je napačno klasificiranih primerkov, boljši je izbrani klasifikator.
+Na sliki \ref{mnozicaZadetkov} imamo prikazane štiri tipe frekvenčnih podatkov, ki nastopajo v kontigenčni matriki. 
+Tabela \ref{defConfmatrix} prikazuje štiri tipe frekvenčnih podatkov, ki so elementi kontingenčne matrike.
+
+\begin{table}[h!]
+	\centering
+	\caption{Pomeni spremenljivk v formulah} \label{defConfmatrix}
+	\begin{tabular}{|c|c|} 
+		\hline
+		\textbf{Kratica} & \textbf{Pomen} \\ \hline
+		$ tp $ & rue positive (pravilno klasificirani 1) \\ \hline
+		$ fp $ & false positive (v resnici 0, klasificirani kot 1) \\ \hline
+		$ tn $ & true negative (pravilno klasificirani 0) \\ \hline
+		$ fn $ & false negative (v resnici 1, klasificrani kot 0) \\ \hline
+		$ p $ & all positive (vsi ki spadajo v 1) \\ \hline
+		$ n $ & all negative (vsi ki spadajo v 0) \\ \hline
+	\end{tabular}
+\end{table}
+
+S pomočjo kontingenčna matrike lahko pridobimo podatke o preciznosti, priklicu, natančnosti in vrednosti funkcije $ F1 $.
+
+$$ precision = \frac{tp}{tp + fp} $$
+$$ recall = \frac{tp}{tp + fn} $$
+$$ accuracy = \frac{tp + tn}{tp + tn + fp + fn} $$
+$$ f1 = 2 \cdot \frac{precision \cdot recall}{precision + recall} $$
 \subsection{Rezultati}
+Pri vseh metodah smo za učenje uporabili uni-grame, bi-grame in tri-grame.
+
 \subsubsection{SVM}
 \begin{table}[h!]
 	\centering
@@ -93,6 +163,7 @@ Besedilo, ki smo ga želeli klasificirati smo razdelili na besedne n-grame, naka
 		povprečje & 0.71 & 0.70 & 0.70 & 1000 \\ \hline
 	\end{tabular}
 \end{table}
+Natančnost modela 70.3\% (703/1000).
 
 \subsubsection{Random forest}
 \begin{table}[h!]
@@ -106,25 +177,7 @@ Besedilo, ki smo ga želeli klasificirati smo razdelili na besedne n-grame, naka
 		povprečje & 0.61 & 0.60 & 0.60 & 1000 \\ \hline
 	\end{tabular}
 \end{table}
-
-\subsection{Način izračuna}
-\begin{table}[h!]
-	\centering
-	\caption{Pomeni spremenljivk v formulah}
-	\begin{tabular}{|c|c|} 
-		\hline
-		\textbf{Kratica} & \textbf{Pomen} \\ \hline
-		$ tp $ & rue positive (pravilno klasificirani 1) \\ \hline
-		$ fp $ & false positive (v resnici 0, klasificirani kot 1) \\ \hline
-		$ tn $ & true negative (pravilno klasificirani 0) \\ \hline
-		$ fn $ & false negative (v resnici 1, klasificrani kot 0) \\ \hline		
-	\end{tabular}
-\end{table}
-
-$$ precision = \frac{tp}{tp + fp} $$
-$$ recall = \frac{tp}{tp + fn} $$
-$$ accuracy = \frac{tp + tn}{tp + tn + fp + fn} $$
-$$ f1 = 2 \cdot \frac{precision \cdot recall}{precision + recall} $$
+Natančnost modela 60.5\% (605/1000).
 
 \subsection{Primerjava rezultatov}
 TODO
