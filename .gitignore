@@ -243,3 +243,5 @@ src
 .idea/
 Read the Docs
 config.rst
+
+*.txt
